@@ -1,7 +1,8 @@
 ## Crunch
 
-Crunch  can  create  a  wordlist  based on criteria you specify.  The outout from crunch can be sent to the
-       screen, file, or to another program.  The required parameters are:
+Crunch is a wordlist generator where you can specify a standard character set.
+
+The required parameters are:
 
        min-len
               The minimum length string you want crunch to start at.  This option is required even for  parameters
@@ -100,50 +101,67 @@ Crunch  can  create  a  wordlist  based on criteria you specify.  The outout fro
 ### EXAMPLES
      
        Example 1
-       crunch 1 8
+       
+       $ crunch 1 8
        crunch will display a wordlist that starts at a and ends at zzzzzzzz
 
+
        Example 2
-       crunch 1 6 abcdefg
+       
+       $ crunch 1 6 abcdefg
        crunch will display a wordlist using the character set abcdefg that starts at a and ends at gggggg
 
+
        Example 3
-       crunch 1 6 abcdefg\
+       
+       $ crunch 1 6 abcdefg\
        there is a space at the end of the character string.  In order for crunch to use the space you will need to
        escape it using the \ character.  In this example you could also put quotes around the letters and not need
        the \, i.e. "abcdefg ".  Crunch will display a wordlist using the character set abcdefg  that starts  at  a
        and ends at (6 spaces)
 
+
        Example 4
-       crunch 1 8 -f charset.lst mixalpha-numeric-all-space -o wordlist.txt
+       
+       $ crunch 1 8 -f charset.lst mixalpha-numeric-all-space -o wordlist.txt
        crunch  will  use the mixalpha-numeric-all-space character set from charset.lst and will write the wordlist
        to a file named wordlist.txt.  The file will start with a and end with "        "
 
+
        Example 5
-       crunch 8 8 -f charset.lst mixalpha-numeric-all-space -o wordlist.txt -t @@dog@@@ -s cbdogaaa
+       
+       $ crunch 8 8 -f charset.lst mixalpha-numeric-all-space -o wordlist.txt -t @@dog@@@ -s cbdogaaa
        crunch should generate a 8 character  wordlist  using  the  mixalpha-number-all-space  character  set  from
        charset.lst  and will write the wordlist to a file named wordlist.txt.  The file will start at cbdogaaa and
        end at "  dog   "
 
+
        Example 6
-       crunch 2 3 -f charset.lst ualpha -s BB
+       
+       $ crunch 2 3 -f charset.lst ualpha -s BB
        crunch with start generating a wordlist at BB and end with ZZZ.  This is useful if you have to stop  gener‐
        ating  a  wordlist in the middle.  Just do a tail wordlist.txt and set the -s parameter to the next word in
        the sequence.  Be sure to rename the original wordlist BEFORE you begin as crunch will overwrite the exist‐
        ing wordlist.
 
+
        Example 7
-       crunch 4 5 -p abc
+       
+       $ crunch 4 5 -p abc
        The numbers aren't processed but are needed.
        crunch will generate abc, acb, bac, bca, cab, cba.
        
+       
        Example 8
-       crunch 4 5 -p dog cat bird
+       
+       $ crunch 4 5 -p dog cat bird
        The numbers aren't processed but are needed.
        crunch will generate birdcatdog, birddogcat, catbirddog, catdogbird, dogbirdcat, dogcatbird.
 
+
        Example 9
-       crunch 1 5 -o START -c 6000 -z bzip2
+       
+       $ crunch 1 5 -o START -c 6000 -z bzip2
        crunch  will  generate  bzip2  compressed files with each file containing 6000 words.  The filenames of the
        compressed files will be first_word-last_word.txt.bz2
 
@@ -168,13 +186,17 @@ Crunch  can  create  a  wordlist  based on criteria you specify.  The outout fro
        3.8K  aaaa-aiwt.txt.bz2
        1.1K  aaaa-aiwt.txt.lzma
 
+
        Example 10
-       crunch 4 5 -b 20mib -o START
+       
+       $ crunch 4 5 -b 20mib -o START
        will generate 4 files: aaaa-gvfed.txt, gvfee-ombqy.txt, ombqz-wcydt.txt, wcydu-zzzzz.txt
        the first three files are 20MBs (real power of 2 MegaBytes) and the last file is 11MB.
 
+
        Example 11
-       crunch 3 3 abc + 123 !@# -t @%^
+       
+       $ crunch 3 3 abc + 123 !@# -t @%^
        will generate a 3 character long word with a character as the first character, and  number  as  the  second
        character, and a symbol for the third character.  The order in which you specify the characters you want is
        important.  You must specify the order as lower case character, upper case character, number,  and  symbol.
@@ -182,12 +204,16 @@ Crunch  can  create  a  wordlist  based on criteria you specify.  The outout fro
        I am not using the upper case character set so I am using the plus sign placeholder.  The above will  start
        at a1! and end at c3#
 
+
        Example 12
-       crunch 3 3 abc + 123 !@# -t ^%@
+       
+       $ crunch 3 3 abc + 123 !@# -t ^%@
        will generate 3 character words starting with !1a and ending with #3c
 
+
        Example 13
-       crunch 4 4  + + 123 + -t %%@^
+       
+       $ crunch 4 4  + + 123 + -t %%@^
        the plus sign (+) is a place holder so you can specify a character set for the character type.  crunch will
        use the default character set for the character type when crunch encounters a + (plus sign) on the  command
        line.   You  must either specify values for each character type or use the plus sign.  I.E. if you have two
@@ -200,8 +226,10 @@ Crunch  can  create  a  wordlist  based on criteria you specify.  The outout fro
        there is a space at the end of the above string
        the output will start at 11a! and end at "33z ".  The quotes show the space at the end of the string.
 
+       
        Example 14
-       crunch 5 5 -t ddd@@ -o j -p dog cat bird
+       
+       $ crunch 5 5 -t ddd@@ -o j -p dog cat bird
        any character other than one of the following: @,%^
        is the placeholder for the words to permute.  The @,%^ symbols have the same function as -t.
        If you want to use @,%^ in your output you can use the -l option to specify which character you want crunch
@@ -226,28 +254,37 @@ Crunch  can  create  a  wordlist  based on criteria you specify.  The outout fro
        <skipped>
        p@ssZ9
 
+
        Example 16
-       crunch 5 5 -s @4#S2 -t @%^,2 -e @8 Q2 -l @dddd -b 10KB -o START
+       
+       $ crunch 5 5 -s @4#S2 -t @%^,2 -e @8 Q2 -l @dddd -b 10KB -o START
        crunch  will generate 5 character strings starting with @4#S2 and ending at @8 Q2.  The output will be bro‐
        ken into 10KB sized files named for the files starting and ending strings.
 
+
        Example 17
-       crunch 5 5 -d 2@ -t @@@%%
+       
+       $ crunch 5 5 -d 2@ -t @@@%%
        crunch will generate 5 character strings staring with aab00 and ending at zzy99.  Notice that aaa  and  zzz
        are not present.
 
 
-    Example 18
-       crunch 10 10 -t @@@^%%%%^^ -d 2@ -d 3% -b 20mb -o START
+       Example 18
+       
+       $crunch 10 10 -t @@@^%%%%^^ -d 2@ -d 3% -b 20mb -o START
        crunch  will  generate  10  character strings starting with aab!0001!! and ending at zzy 9998    The output
        will be written to 20mb files.
 
+
        Example 19
-       crunch 8 8 -d 2@
+       
+       $crunch 8 8 -d 2@
        crunch will gernerate 8 characters that limit the same number of lower case characters to 2.   Crunch  will
        start at aabaabaa and end at zzyzzyzz.
 
+
        Example 20
-       crunch 4 4 -f unicode_test.lst japanese -t @@%% -l @xdd
+       
+       $crunch 4 4 -f unicode_test.lst japanese -t @@%% -l @xdd
        crunch  will load some japanese characters from the unicode_test character set file.  The output will start
        at @日00 and end at @語99.

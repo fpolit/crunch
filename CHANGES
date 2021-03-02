@@ -1,0 +1,150 @@
+ *  Changelog:
+ *  version 1.0 initial release in 2004 (guess based on copyright date) 194 lines of code
+ *  version 1.1 added support to read character list from a specified file
+ *  version 1.2 added output parameter
+ *  version 1.3 added -c parameter to break apart output file. I would prefer to break
+ *                 apart on file size instead of number of lines, but there is no reliable
+ *                 way to get that information while the file is being created.
+ *  version 1.4 added better help documentation and fixed some bugs:
+ *              space character was sometimes getting stripped off in charset
+ *              replace if (pattern[0]==0) { with if ((strncmp(&pattern[0],"\0",1)==0)) {
+ *                 to make splint happy
+ *              rename templ variable to pattern
+ *              changed some fixed size local buffers to dynamically allocated buffers
+ *              if max-len was larger than strlen of the -t parameter crunch would generate
+ *                 duplicate words
+ *              document some of the code
+ *  version 1.5 fixed length and -s parameter.  Before if you did ./crunch 1 3 -s 	
+ *                 you would only get j-z and not j-zzz
+ *              converted some fixed length buffers to variable length
+ *              added checks to fclose
+ *              fixed it so that -s and -t can now work together
+ *              added support to generate wordlists greater than 2GB even though several
+ *                 programs can't access files of this size (john the ripper for example)
+ *              This support works on Ubuntu intrepid.  This probably works on most Linux
+ *                 platforms.  Support for Solaris, HP-UX, Windows, BSD is unknown.
+ *  version 1.6 add option (-p) to support factorial instead of exponentail processing.  i.e.
+ *                 if you did ./crunch 3 3 abc you would get 27 results (3x3x3): a through ccc
+ *                 This new option will give you 6 results (3! = 3x2x1)
+ *                 i.e. (abc, acb, bac, bca, cab, cba)
+ *                 the permute function was written by Richard Heathfield
+ *                 and copied from
+ *                 http://bytes.com/groups/c/536779-richard-heathfields-tsp-permutation-algorithm
+ *                 I did change temp from an int to char to make splint happy.
+ *                 Richard Heathfield may be contacted at rjh@cpax.org.uk
+ *  version 1.7 add option (-m) to support factoring words instead of characters
+ *  version 1.8 add option (-z) to support compressing the output
+ *  version 1.9 only need permute2 (remove permute and renamed permute2 to permute)
+ *              fix off by 1 error - reported by MikeCa
+ *              fix issue where output file wasn't being renamed
+ *              fork progress process
+ *              really fix it so that -s and -t can now work together
+ *              when using -c sometimes the output was 1 larger than requested
+ *              cstring_cmp from http://www.anyexample.com/programming/c/qsort__sorting_array_of_strings__integers_and_structs.xml to sort words to permute so the results will be in sorted order
+ *  version 2.0 permute now supports -c -o & -z. -f is also supported for permuting letters
+ *              really really fix it so that -s and -t can now work together
+ *              added null checks for parameter values to prevent segmentation faults
+ *              added support to invert chunk output - written by Pillenski
+ *              added support to breakup file based on size - written by Pillenski
+ *  version 2.1 permute now supports -b
+ *              add signal handling - pressing ctrl break will cause crunch
+ *                 to finish the word it is processing and then gracefully exit instead
+ *                 of leaving files open and words half finished.  This is the first
+ *                 step in supporting resume.
+ *              chunk now supports resume
+ *  version 2.2 pattern supports numbers and symbols
+ *  version 2.3 fix bytecount
+ *              add new options to usage
+ *  version 2.4 fix usage (-m and not -n) - reported by Tape
+ *              clarified -b option in help and man file - reported by Tape
+ *              fix Makefile install to /pentest/passwords not /pentest/password -
+ *                 reported by Tape
+ *              make bytecount behave consistently - reported by Tape
+ *              fixed up copyrights
+ *  version 2.5 -q permute supports reading from strings from file
+ *              sorted parameters in code and usage
+ *              -t supports upper and lower case letters
+ *              -f supports multiple charsets
+ *              add -v option to show version information
+ *              add correct gpl.txt (version 2 not 3)
+ *              fix charset.lst (some symbol14 had 15 chars)
+ *              add symbol14, symbol14-space, symbol-all, and symbol-all-space to charset.lst
+ *              removed examples and parameters from usage.  I added a sentence
+ *                 telling people to refer to the man page.  It is easier to update
+ *                 the man only.
+ *              combined -m and -p into -p
+ *              got rid of some unnecessary casts
+ *              changed all mallocs to callocs, this shuts up a few splint warnings
+ *  version 2.6 fix -p seg fault - reported by Tape
+ *              improve -p documentation - reported by Tape
+ *              fix Makefile to install to correct directory again - reported by Tape
+ *              fix Makefile to install charset.lst - reported by Tape
+ *              fix memory leak
+ *              replace if (argv[i+1] != NULL) with if (i+1 < argc) as argv[i+1]
+ *                 can be filled garbage so it is not an accurate test
+ *              fix an off by 1 in resume counter
+ *              resume now respects the -b parameter, previously it was ignored
+ *              -s now supports the @*%^ symbols in -t
+ *              added status report when saving to file
+ *              renamed some variables to better names
+ *              added a few comments to variables
+ *              added a hex string 0123456789abcdef to charset.lst
+ *  version 2.7 fix progress bar when using -s
+ *              fixed typo man file - Thanks Tape
+ *              add -u option to suppress all filesize and linecount so crunch
+ *                 can feed another program
+ *              fork a child process for progress %%
+ *              Niclas Kroon added swedish characters to the charset.lst
+ *              permute supports -t
+ *              added -std=c99 to Makefile since unsigned long long isn't in c89
+ *              ran valgrind and fixed a small memory issue.  I forgot to allocate
+ *                 space for the \0 character in a few places.  Doh!
+ *              improved documentation of the charset field
+ *  version 2.8 fix progress message.  It could cause a fatal error under certain
+ *                 circumstances
+ *  version 2.9 fix divide by zero error.
+ *  version 3.0 fix wrong version number
+ *              changed the * character of -t option to a , (comma) as * is a reserved character
+ *              strip off blank lines when reading file for permute (-q option)
+ *              I fixed a problem with using -i and -t together
+ *              add -l to allow for literal characters of @,%^
+ *              fix -b and -c and % output
+ *              fix permute -t to work with -b and -c
+ *              fixed crash when / character was in filename
+ *                 replace / with space - reported by Nazagul
+ *  version 3.0.1 fix printpermutepattern - it was using $ instead of ,
+ *  version 3.1 make -l take a string so you can have @ and characters
+ *              add TB and PB to output size
+ *              fix comments referencing $ that should be ,
+ *              add -e to end generation after user specified string (useful
+ *                 when piping crunch to a program)
+ *  version 3.2 add -d to limit duplicate characters
+ *              put correct function name into error messages to help with debugging
+ *              fix Makefile uninstall to remove crunch directory and install GPL.TXT
+ *              removed flag5 as it wasn't needed
+ *              if you press Ctrl-C crunch will now print where it stops so you
+ *                 can resume piping crunch into another program
+ *  version 3.3 add more information to help section
+ *              Fixed mem leaks, invalid comparisons - fixed by JasonC
+ *              Error messages and startup summary now go to stderr (-u now 
+ *                 unnecessary) - fixed by JasonC
+ *              Fixed startup delay due to long sequences of dupe-skipped 
+ *                 strings - fixed by JasonC
+ *              Added unicode support - written by JasonC
+ *              fix write and compress error - reported and fixed by amontero
+ *              fix printpercentage -> linecounter should be ->linetotal
+ *              add support for 7z
+ *  version 3.4 fix -e problem reported by hajjid
+ *              test compile using Ubuntu 12.10 and fixed the following issues:
+ *                 reorder flags in Makefile so crunch can compile successfully
+ *                 remove finall variable from printpercentage
+ *                 remove loaded from main
+ *  version 3.5 make changes to the man based on suggestions from Jari Aalto
+ *              pass pidret to void to make warning go away
+ *              rename GPL.TXT to COPYING
+ *              removed need for -o to use -c i.e. you can use -c any time now
+ *              fixed resume
+ *              fixed linecount and size when using -c and/or -e
+ *  version 3.6 fix endstring problem reported and fixed by mr.atreat@gmail.com
+ *              fix a memory allocation reported and fixed by Hxcan Cai
+ *              allow Makefile to detect Darwin so make will work properly reported and fixed by Marcin

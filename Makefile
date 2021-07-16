@@ -1,34 +1,34 @@
-.PHONY: clean virtualenv test docker dist dist-upload
+.PHONY: virtualenv dist dist-upload
 
-clean:
-	find . -name '*.py[co]' -delete
+install: virtualenv require
+	env/bin/python3 setup.py install --use-feature=in-tree-build
+
+installdev: virtualenv requiredev
+	env/bin/python3 setup.py install --verbose --use-feature=in-tree-build
 
 virtualenv:
-	virtualenv --prompt '(crunch)' env
-	env/bin/pip3 install -r requirements-dev.txt
-	env/bin/python3 setup.py develop
+	python3 -m venv --prompt 'pystegseek' env
 	@echo
-	@echo "VirtualENV Setup Complete. Now run: source env/bin/activate"
+	@echo "Virtual enviroment was created. Now activate it: source env/bin/activate"
 	@echo
+	env/bin/python3 -m pip install --upgrade pip
+
+require:
+	env/bin/python3 -m pip install -r requirements.txt
+
+requiredev:
+	env/bin/python3 -m pip install -r requirements-dev.txt
 
 pkg:
-	python3 -m pip install -r requirements.txt
+	env/bin/python3 setup.py install --use-feature=in-tree-build
 
 pkgdev:
-	python3 -m pip install -r requirements-dev.txt
+	env/bin/python3 setup.py install --verbose --use-feature=in-tree-build
 
-install:
-	python3 -m pip install -r requirements.txt
-	python3 -m pip install .
-	
-installdev:
-	python3 -m pip install -r requirements-dev.txt
-	python3 -m pip install . --verbose
-
-dist: clean
+dist:
 	rm -rf dist/*
-	python setup.py sdist
-	python setup.py bdist_wheel
+	env/bin/python3 setup.py sdist
+	env/bin/python3 setup.py bdist_wheel
 
 dist-upload:
-	twine upload dist/* --verbose
+	env/bin/twine upload dist/*

@@ -41,7 +41,7 @@ INSTALL	    = sudo $(shell which install)
 CC	    = $(shell which gcc)
 LIBFLAGS    = -lm
 THREADFLAGS = -pthread
-OPTFLAGS    = -g -o0
+OPTFLAGS    = -ggdb -o0
 LINTFLAGS   = -Wall -pedantic
 CFLAGS_STD  = $(THREADFLAGS) $(LINTFLAGS) -std=c99
 VCFLAGS	    = $(CFLAGS_STD) $(OPTFLAGS)
